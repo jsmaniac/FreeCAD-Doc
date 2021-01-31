@@ -90,6 +90,9 @@ def compile(qhpfile):
     if not os.system(QHELPCOMPILER + ' '+qhpfile+' -o '+qchfile):
         if VERBOSE: print("Successfully created",qchfile)
         return 0
+    else:
+        os.system('cat -v ' + qhpfile)
+        raise "Error during generation of freecad.qch"
 
 def generate(qhcpfile):
     "generates qassistant-specific settings like icon, title, ..."
@@ -104,6 +107,9 @@ def generate(qhcpfile):
     if not os.system(QCOLLECTIOMGENERATOR+' '+qhcpfile+' -o '+qhcfile):
         if VERBOSE: print("Successfully created ",qhcfile)
         return 0
+    else:
+        os.system('cat -v ' + qhcpfile)
+        raise "Error during generation of freecad.qhc"
 
 def createCollProjectFile():
     qprojectfile = '''<?xml version="1.0" encoding="UTF-8"?>
