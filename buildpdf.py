@@ -472,7 +472,7 @@ def joinpdf():
     
     result = PdfFileWriter()
     createCover()
-    inputfile = PdfFileReader(open(FOLDER+os.sep+'Cover.pdf','rb'))
+    inputfile = PdfFileReader(open(os.path.join(FOLDER,'Cover.pdf'),'rb'))
     result.addPage(inputfile.getPage(0))
     count = 1
 
@@ -547,11 +547,11 @@ def createCover():
     "downloads and creates a cover page"
     if VERBOSE: print("fetching " + COVER)
     data = (urlopen(COVER).read())
-    path = FOLDER + os.sep + "Cover.svg"
+    path = os.path.join(FOLDER, "Cover.svg")
     fil = open(path,'wb')
     fil.write(data)
     fil.close()
-    os.system('inkscape --export-pdf='+FOLDER+os.sep+'Cover.pdf'+' '+FOLDER+os.sep+'Cover.svg')
+    os.system('inkscape --export-pdf='+os.path.join(FOLDER,'Cover.pdf')+' '+os.path.join(FOLDER,'Cover.svg'))
 
 
 if __name__ == "__main__":
