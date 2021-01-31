@@ -68,7 +68,15 @@ def crawl():
         print("Error at compiling")
         return 1
     if VERBOSE: print("All done!")
-    i=raw_input("Copy the files to their correct location in the source tree? y/n (default=no) ")
+    if "--yes-copy" in sys.argv:
+        i="yes"
+    elif "--no-copy" in sys.argv:
+        i="no"
+    else:
+        try:
+            i=raw_input("Copy the files to their correct location in the source tree? y/n (default=no) ")
+        except:
+            i="no"
     if i.upper() in ["Y","YES"]:
         shutil.copy("localwiki/freecad.qch","../../Doc/freecad.qch")
         shutil.copy("localwiki/freecad.qhc","../../Doc/freecad.qhc")

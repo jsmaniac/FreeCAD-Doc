@@ -68,7 +68,7 @@ jobs:
 #        run: python2 ./update.py
 
       - name: Generate freecad.qhc and freecad.qch files
-        run: python2 ./buildqhelp.py
+        run: python2 ./buildqhelp.py --non-interactive
 
       - name: Generate freecad.pdf
         run: python2 ./buildpdf.py
