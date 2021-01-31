@@ -42,11 +42,11 @@ jobs:
       - name: Install prerequisites for testing
         run: sudo apt install xvfb
 
-      - name: Remove existing downloads (for now, because the update.py script seems to not work well)
-        run: |
-            rm -rf localwiki revisions.txt updates.txt wikifiles.txt
-            mkdir localwiki
-            touch revisions.txt updates.txt wikifiles.txt
+#      - name: Remove existing downloads (for now, because the update.py script seems to not work well)
+#        run: |
+#            rm -rf localwiki revisions.txt updates.txt wikifiles.txt
+#            mkdir localwiki
+#            touch revisions.txt updates.txt wikifiles.txt
 
       - name: Build an index file containing a list of all the files to download
         run: python2 ./buildwikiindex.py
@@ -58,14 +58,14 @@ jobs:
         #run: python2 ./downloadwiki.py > ./downloadwiki.py.log
         run: python2 ./downloadwiki.py
 
-#      - name: Create a list of revision IDs for each page
-#        run: python2 ./update.py
-#
-#      - name: Get a list of pages that have changed
-#        run: python2 ./update.py
-#
-#      - name: Download the changed pages (and all their dependencies) again
-#        run: python2 ./update.py
+      - name: Create a list of revision IDs for each page
+        run: python2 ./update.py
+
+      - name: Get a list of pages that have changed
+        run: python2 ./update.py
+
+      - name: Download the changed pages (and all their dependencies) again
+        run: python2 ./update.py
 
       - name: Generate freecad.qhc and freecad.qch files
         run: python2 ./buildqhelp.py --non-interactive
