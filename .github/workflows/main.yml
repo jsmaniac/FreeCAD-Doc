@@ -100,3 +100,9 @@ jobs:
           name: freecad.qhc
           path: localwiki/freecad.qhc
 
+      - name: Upload freecad.pdf
+        uses: actions/upload-artifact@v2
+        with:
+          name: freecad.pdf
+          path: localwiki/freecad.pdf
+
