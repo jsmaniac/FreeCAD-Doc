@@ -40,7 +40,7 @@ FOLDER = "./localwiki"
 INDEX = "Online_Help_Toc" # the start page from where to crawl the wiki
 VERBOSE = True # to display what's going on. Otherwise, runs totally silent.
 QHELPCOMPILER = 'qhelpgenerator -qt=qt5'
-QCOLLECTIOMGENERATOR = 'qcollectiongenerator'
+QCOLLECTIOMGENERATOR = 'qcollectiongenerator -qt=qt5'
 RELEASE = '0.17'
 
 #    END CONFIGURATION      ##############################################
