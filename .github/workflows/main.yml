@@ -27,7 +27,7 @@ jobs:
             fetch-depth: 0
 
       - name: Install prerequisites from the README
-        run: sudo apt install python qttools5-dev-tools wkhtmltopdf python-pypdf2
+        run: sudo apt install python qttools5-dev-tools wkhtmltopdf python-pypdf2 inkscape
 
       - name: Print versions
         run: |
