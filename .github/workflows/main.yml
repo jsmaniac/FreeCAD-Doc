@@ -1,0 +1,108 @@
+name: Build-Documentation
+
+on:
+  # Trigger the workflow every night
+  schedule:
+    - cron: '0 1 * * *'
+
+  # Trigger on push to master and for pull requests targetting master
+  push:
+    branches: [ master ]
+
+  pull_request:
+    branches: [ master ]
+
+  # Trigger manually from the Actions tab
+  workflow_dispatch:
+
+jobs:
+  build-documentation:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check-out the repository under $GITHUB_WORKSPACE
+        uses: actions/checkout@v2
+        with:
+            fetch-depth: 0
+
+      - name: Install prerequisites from the README
+        run: sudo apt install python qttools5-dev-tools wkhtmltopdf python-pypdf2 inkscape
+
+      - name: Print versions
+        run: |
+            python2 --version || true
+            wkhtmltopdf --version --version || true
+            qhelpgenerator --qt=qt4 --version || true
+
+      # GitHub Actions currently uses 18.04 as of 02021-01-31, but will likely update in the future
+      - name: Try to install prerequisites for Ubuntu 20.04 from the README
+        run: sudo apt install qhelpgenerator-qt5 || true
+
+      - name: Install prerequisites for testing
+        run: sudo apt install xvfb
+
+#      - name: Remove existing downloads (for now, because the update.py script seems to not work well)
+#        run: |
+#            rm -rf localwiki revisions.txt updates.txt wikifiles.txt
+#            mkdir localwiki
+#            touch revisions.txt updates.txt wikifiles.txt
+
+      - name: Build an index file containing a list of all the files to download
+        run: python2 ./buildwikiindex.py
+
+      - name: Download wiki pages
+        # Redirect log because it seems we exceed the amount of data GitHub is willing
+        # to show in the interacive logs and there seems to be no UI to access the raw
+        # logs at this time
+        #run: python2 ./downloadwiki.py > ./downloadwiki.py.log
+        run: python2 ./downloadwiki.py
+
+      - name: Create a list of revision IDs for each page
+        run: python2 ./update.py
+
+      - name: Get a list of pages that have changed
+        run: python2 ./update.py
+
+      - name: Download the changed pages (and all their dependencies) again
+        run: python2 ./update.py
+
+      - name: Generate freecad.qhc and freecad.qch files
+        run: python2 ./buildqhelp.py --non-interactive
+
+      - name: Generate freecad.pdf
+        run: python2 ./buildpdf.py
+
+      - name: Split the generated freecad.qch into parts that are smaller than 50Mb (github limit)
+        run: split -d --byte=49M localwiki/freecad.qch localwiki/freecad.qch.part
+
+      - name: Reassemble the previously-split freecad.qch 
+        run: cat localwiki/freecad.qch.part* >> test.qch
+
+      - name: Check that the reassembled test.qch is identical to localwiki/freecad.qch
+        run: diff -q test.qch localwiki/freecad.qch
+
+      - name: Try to open the .qch file
+        run: |
+          xvfb-run assistant -collectionFile localwiki/freecad.qhc &
+          sleep 5
+          killall assistant
+
+      - name: Upload freecad.qch
+        uses: actions/upload-artifact@v2
+        with:
+          name: freecad.qch
+          path: localwiki/freecad.qch
+
+      - name: Upload freecad.qhc
+        uses: actions/upload-artifact@v2
+        with:
+          name: freecad.qhc
+          path: localwiki/freecad.qhc
+
+      - name: Upload freecad.pdf
+        uses: actions/upload-artifact@v2
+        with:
+          name: freecad.pdf
+          path: localwiki/freecad.pdf
+

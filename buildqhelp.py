@@ -39,8 +39,8 @@ from urllib2 import urlopen, HTTPError
 FOLDER = "./localwiki"
 INDEX = "Online_Help_Toc" # the start page from where to crawl the wiki
 VERBOSE = True # to display what's going on. Otherwise, runs totally silent.
-QHELPCOMPILER = 'qhelpgenerator'
-QCOLLECTIOMGENERATOR = 'qcollectiongenerator'
+QHELPCOMPILER = 'qhelpgenerator -qt=qt5'
+QCOLLECTIOMGENERATOR = 'qcollectiongenerator -qt=qt5'
 RELEASE = '0.17'
 
 #    END CONFIGURATION      ##############################################
@@ -68,7 +68,15 @@ def crawl():
         print("Error at compiling")
         return 1
     if VERBOSE: print("All done!")
-    i=raw_input("Copy the files to their correct location in the source tree? y/n (default=no) ")
+    if "--yes-copy" in sys.argv:
+        i="yes"
+    elif "--no-copy" in sys.argv:
+        i="no"
+    else:
+        try:
+            i=raw_input("Copy the files to their correct location in the source tree? y/n (default=no) ")
+        except:
+            i="no"
     if i.upper() in ["Y","YES"]:
         shutil.copy("localwiki/freecad.qch","../../Doc/freecad.qch")
         shutil.copy("localwiki/freecad.qhc","../../Doc/freecad.qhc")
@@ -82,6 +90,9 @@ def compile(qhpfile):
     if not os.system(QHELPCOMPILER + ' '+qhpfile+' -o '+qchfile):
         if VERBOSE: print("Successfully created",qchfile)
         return 0
+    else:
+        os.system('cat -v ' + qhpfile)
+        raise "Error during generation of freecad.qch"
 
 def generate(qhcpfile):
     "generates qassistant-specific settings like icon, title, ..."
@@ -96,6 +107,9 @@ def generate(qhcpfile):
     if not os.system(QCOLLECTIOMGENERATOR+' '+qhcpfile+' -o '+qhcfile):
         if VERBOSE: print("Successfully created ",qhcfile)
         return 0
+    else:
+        os.system('cat -v ' + qhcpfile)
+        raise "Error during generation of freecad.qhc"
 
 def createCollProjectFile():
     qprojectfile = '''<?xml version="1.0" encoding="UTF-8"?>
@@ -234,5 +248,5 @@ def buildtoc():
     return qfilename
     
 if __name__ == "__main__":
-	crawl()
+	exit(crawl())
       
