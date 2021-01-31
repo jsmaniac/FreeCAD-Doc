@@ -242,5 +242,5 @@ def buildtoc():
     return qfilename
     
 if __name__ == "__main__":
-	crawl()
+	exit(crawl())
       
