@@ -551,7 +551,10 @@ def createCover():
     fil = open(path,'wb')
     fil.write(data)
     fil.close()
-    os.system('inkscape --export-pdf='+os.path.join(FOLDER,'Cover.pdf')+' '+os.path.join(FOLDER,'Cover.svg'))
+    if os.system('inkscape --export-pdf='+os.path.join(FOLDER,'Cover.pdf')+' '+os.path.join(FOLDER,'Cover.svg')) == 0:
+        return
+    else:
+        raise Exception('Conversion of Cover.svg to Cover.pdf failed. Is Inkscape installed?')
 
 
 if __name__ == "__main__":
