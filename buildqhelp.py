@@ -39,7 +39,7 @@ from urllib2 import urlopen, HTTPError
 FOLDER = "./localwiki"
 INDEX = "Online_Help_Toc" # the start page from where to crawl the wiki
 VERBOSE = True # to display what's going on. Otherwise, runs totally silent.
-QHELPCOMPILER = 'qhelpgenerator'
+QHELPCOMPILER = 'qhelpgenerator -qt=qt5'
 QCOLLECTIOMGENERATOR = 'qcollectiongenerator'
 RELEASE = '0.17'
 
